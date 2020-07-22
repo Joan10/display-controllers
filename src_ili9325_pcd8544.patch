@@ -1,0 +1,74 @@
+diff -crB linux-rpi-3.6.y0/arch/arm/mach-bcm2708/bcm2708.c linux-rpi-3.6.y/arch/arm/mach-bcm2708/bcm2708.c
+*** linux-rpi-3.6.y0/arch/arm/mach-bcm2708/bcm2708.c	2013-09-27 15:42:24.000000000 +0200
+--- linux-rpi-3.6.y/arch/arm/mach-bcm2708/bcm2708.c	2014-04-22 20:28:21.742340000 +0200
+***************
+*** 589,596 ****
+  #ifdef CONFIG_BCM2708_SPIDEV
+  static struct spi_board_info bcm2708_spi_devices[] = {
+  	{
+! 		.modalias = "spidev",
+! 		.max_speed_hz = 500000,
+  		.bus_num = 0,
+  		.chip_select = 0,
+  		.mode = SPI_MODE_0,
+--- 589,596 ----
+  #ifdef CONFIG_BCM2708_SPIDEV
+  static struct spi_board_info bcm2708_spi_devices[] = {
+  	{
+! 		.modalias = "spi-ili9325", //hem deixat aquest modalias tant per l'ili9325 com pel pcd8544
+! 		.max_speed_hz = 16000000,
+  		.bus_num = 0,
+  		.chip_select = 0,
+  		.mode = SPI_MODE_0,
+diff -crB linux-rpi-3.6.y0/drivers/video/Kconfig linux-rpi-3.6.y/drivers/video/Kconfig
+*** linux-rpi-3.6.y0/drivers/video/Kconfig	2013-09-27 15:42:24.000000000 +0200
+--- linux-rpi-3.6.y/drivers/video/Kconfig	2014-04-25 15:15:19.586255742 +0200
+***************
+*** 2458,2463 ****
+--- 2458,2487 ----
+  	  Choose this option if you want to use the Unigfx device as a
+  	  framebuffer device. Without the support of PCI & AGP.
+  
++ config FB_PCD8544
++    tristate "Nokia 3310 LCD controller support"
++    depends on FB
++    select FB_SYS_FILLRECT
++    select FB_SYS_COPYAREA
++    select FB_SYS_IMAGEBLIT
++    select FB_SYS_FOPS
++    select FB_DEFERRED_IO
++    help
++      This is a framebuffer device for the Nokia 3310 LCD
++      controller.
++ 
++ config FB_ILI9325
++    tristate "Adafruit ILI9325 board LCD controller support"
++    depends on FB
++    select FB_SYS_FILLRECT
++    select FB_SYS_COPYAREA
++    select FB_SYS_IMAGEBLIT
++    select FB_SYS_FOPS
++    select FB_DEFERRED_IO
++    help
++      This is a framebuffer device for the Adafruit ILI9325 LCD
++      controller.
++ 
+  source "drivers/video/omap/Kconfig"
+  source "drivers/video/omap2/Kconfig"
+  source "drivers/video/exynos/Kconfig"
+diff -crB linux-rpi-3.6.y0/drivers/video/Makefile linux-rpi-3.6.y/drivers/video/Makefile
+*** linux-rpi-3.6.y0/drivers/video/Makefile	2013-09-27 15:42:24.000000000 +0200
+--- linux-rpi-3.6.y/drivers/video/Makefile	2014-04-25 15:15:49.814255347 +0200
+***************
+*** 129,134 ****
+--- 129,136 ----
+  obj-$(CONFIG_FB_S3C2410)	  += s3c2410fb.o
+  obj-$(CONFIG_FB_FSL_DIU)	  += fsl-diu-fb.o
+  obj-$(CONFIG_FB_COBALT)           += cobalt_lcdfb.o
++ obj-$(CONFIG_FB_ILI9325)	  += ili9325.o
++ obj-$(CONFIG_FB_PCD8544)	  += pcd8544.o
+  obj-$(CONFIG_FB_PNX4008_DUM)	  += pnx4008/
+  obj-$(CONFIG_FB_PNX4008_DUM_RGB)  += pnx4008/
+  obj-$(CONFIG_FB_IBM_GXT4500)	  += gxt4500.o
+Només a linux-rpi-3.6.y/drivers/video: ili9325.c
+Només a linux-rpi-3.6.y/drivers/video: pcd8544.c
